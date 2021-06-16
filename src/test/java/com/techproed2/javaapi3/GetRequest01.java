@@ -26,10 +26,6 @@ public class GetRequest01 {
 	     Status Line should be HTTP/1.1 200 OK
 	 */
 	
-	public static void main(String[] args) {
-		
-
-	}
 	@Test
 	public void get01() {
 		//1.step set url
@@ -62,7 +58,7 @@ public class GetRequest01 {
 		System.out.println("=================");
 		System.out.println("Date of Header: "+ response.getHeader("Date"));
 		
-		System.out.println("Date of Header: "+ response.getHeader("Server"));
+		System.out.println("Server: "+ response.getHeader("Server"));//Cowboy
 		
 		
 		
