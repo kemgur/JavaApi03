@@ -1,12 +1,15 @@
 package com.techproed2.javaapi3;
 
-import static io.restassured.RestAssured.*;
-
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import static io.restassured.RestAssured.*;
+import static org.junit.Assert.assertEquals;
+import java.util.HashMap;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import pojo.Data;
 import testBaseClassess.TestBaseDummy;
+
 public class PostRequest01 extends TestBaseDummy{
 	
 	/*
@@ -30,24 +33,60 @@ public class PostRequest01 extends TestBaseDummy{
  "message": "Successfully! Record has been added."
                                                                            }
 	 */
-	  @Test
-		public void post01() {
-			
-			spec.pathParams("api","api","version","v1","create","create");
-			
-			Data data=new Data();		
-			
-			data.setAge(35);
-			data.setDepartment("it");
-			data.setName("bill");
-			data.setSalary(1000);
-			
-			Response response=given().contentType(ContentType.JSON).spec(spec).
-					body(data).when().post("/{api}/{version}/{create}");
-			
-			
-		}
+
+    @Test
+	public void post01() {
+		
+		spec.pathParams("api","api","version","v1","create","create");
+		
+//		Data data=new Data();		
+//		
+//		data.setAge(35);
+//		data.setDepartment("it");
+//		data.setName("bill");
+//		data.setSalary(1000);
+		
+		
+		//Data data=new Data( 0,35, 1000, "Bill", "it");
+		
+		HashMap<String ,Object> data=new HashMap<String, Object>();
+		
+		data.put("age", 35);
+		data.put("salary", 1000);
+		data.put("name", "Bill");
+		data.put("department", "it");
+		
+		
+		Response response=given().contentType(ContentType.JSON).spec(spec).
+				auth().basic("admin", "password123").
+				body(data).when().post("/{api}/{version}/{create}");
+		response.prettyPrint();
+		
+		//assertEquals(200,response.getStatusCode());
+		
+		JsonPath json=response.jsonPath();
+		assertEquals("Bill",json.getString("data.name"));
+		assertEquals("it", json.getString("data.department"));
+		
+		response
+		.then()
+		.assertThat()
+		.statusCode(200)
+		.and()
+		.body("data.age", Matchers.equalTo(35));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
 	}
+	
+}
